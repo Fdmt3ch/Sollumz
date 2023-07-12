@@ -531,7 +531,7 @@ class SollumzImportSettings(bpy.types.PropertyGroup):
     join_geometries: bpy.props.BoolProperty(
         name="Join Geometries",
         description="Joins the drawables geometries into a single mesh.",
-        default=False,
+        default=True,
     )
 
     split_by_bone: bpy.props.BoolProperty(
@@ -584,7 +584,7 @@ class SollumzImportSettings(bpy.types.PropertyGroup):
     ymap_instance_entities: bpy.props.BoolProperty(
         name="Instance Entities",
         description="If enabled, instance all entities from the selected ymap(s).",
-        default=False,
+        default=True,
     )
 
 
