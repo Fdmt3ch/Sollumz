@@ -106,7 +106,7 @@ class FlagPresetProp(bpy.types.PropertyGroup):
 
 def get_flag_presets_path():
     package_name = __name__.split(".")[0]
-    presets_path = f"{bpy.utils.user_resource('SCRIPTS', path='addons')}\\{package_name}\\ybn\\flag_presets.xml"
+    presets_path =  presets_path = bpy.path.native_pathsep(f"{bpy.utils.user_resource('SCRIPTS', path='addons')}\\{package_name}\\ybn\\flag_presets.xml")
     if os.path.exists(presets_path):
         return presets_path
     else:

@@ -17,8 +17,9 @@ BONE_TAIL_POS = (0, 0.05, 0)
 def shadergroup_to_materials(shadergroup, filepath):
     materials = []
 
-    texture_folder = os.path.dirname(
-        filepath) + "\\" + os.path.basename(filepath)[:-8]
+    texture_folder = bpy.path.native_pathsep(os.path.dirname(
+        filepath) + "\\" + os.path.basename(filepath)[:-8])
+    
     for shader in shadergroup.shaders:
 
         filename = shader.filename
@@ -89,7 +90,8 @@ def shadergroup_to_materials(shadergroup, filepath):
                         if not n.texture_properties.embedded:
                             # Set external texture name for non-embedded textures
                             n.image.source = "FILE"
-                            n.image.filepath = "//" + param.texture_name + ".dds"
+                            n.image.filepath = bpy.path.resolve_ncase(
+                                bpy.path.native_pathsep(texture_folder + "//" + param.texture_name + ".dds"))
 
                         if param.name == "BumpSampler" and hasattr(n.image, "colorspace_settings"):
                             n.image.colorspace_settings.name = "Non-Color"
