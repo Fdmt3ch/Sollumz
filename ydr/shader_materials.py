@@ -140,10 +140,10 @@ def create_tinted_shader_graph(obj):  # move to blenderhelper.py?
     geom.node_group = tnt_ng
 
     # set input / output variables
-    input_id = geom.node_group.inputs[1].identifier
+    input_id = geom.node_group.interface.items_tree[3].identifier
     geom[input_id + "_attribute_name"] = "colour0"
     geom[input_id + "_use_attribute"] = True
-    output_id = geom.node_group.outputs[1].identifier
+    output_id = geom.node_group.interface.items_tree[2].identifier
     geom[output_id + "_attribute_name"] = "TintColor"
     geom[output_id + "_use_attribute"] = True
 
@@ -167,10 +167,10 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
     output = gnt.nodes.new("NodeGroupOutput")
 
     # Create the necessary sockets for the node group
-    gnt.inputs.new("NodeSocketGeometry", "Geometry")
-    gnt.inputs.new("NodeSocketVector", "Vector")
-    gnt.outputs.new("NodeSocketGeometry", "Geometry")
-    gnt.outputs.new("NodeSocketColor", "Color")
+    gnt.interface.new_socket(socket_type="NodeSocketGeometry", name="Geometry", in_out='INPUT')
+    gnt.interface.new_socket(socket_type="NodeSocketVector", name="Vector", in_out='INPUT')
+    gnt.interface.new_socket(socket_type="NodeSocketGeometry", name="Geometry", in_out='OUTPUT')
+    gnt.interface.new_socket(socket_type="NodeSocketColor", name="Color", in_out='OUTPUT')
 
     # link input / output node to create geometry socket
     cptn = gnt.nodes.new("GeometryNodeCaptureAttribute")
@@ -404,7 +404,7 @@ def create_normal_invert_node(node_tree: bpy.types.NodeTree):
 def link_specular(node_tree, spctex):
     bsdf = node_tree.nodes["Principled BSDF"]
     links = node_tree.links
-    links.new(spctex.outputs["Color"], bsdf.inputs["Specular"])
+    links.new(spctex.outputs["Color"], bsdf.inputs["Specular IOR Level"])
 
 
 def create_pixel_tint_nodes(node_tree, tex, tinttex, tintflags):
@@ -539,7 +539,7 @@ def link_value_shader_parameters(shader, node_tree):
             links.new(spec.outputs[0], mult.inputs[0])
             links.new(map.outputs[0], mult.inputs[1])
             links.new(spec_im.outputs[0], map.inputs[0])
-            links.new(mult.outputs[0], bsdf.inputs["Specular"])
+            links.new(mult.outputs[0], bsdf.inputs["Specular IOR Level"])
     if spec_fm:
         bsdf = try_get_node(node_tree, "Principled BSDF")
         if bsdf:
@@ -566,7 +566,7 @@ def create_water_nodes(node_tree):
     vol_absorb.inputs[1].default_value = 0.25  # Density
     bsdf = node_tree.nodes["Principled BSDF"]
     bsdf.inputs[0].default_value = (0.588, 0.91, 0.851, 1.0)
-    bsdf.inputs[19].default_value = (
+    bsdf.inputs[26].default_value = (
         0.49102, 0.938685, 1.0, 1.0)  # Emission Colour
     bsdf.inputs['Emission Strength'].default_value = 0.1
     glass_shader = node_tree.nodes.new("ShaderNodeBsdfGlass")
@@ -688,7 +688,7 @@ def create_basic_shader_nodes(mat, shader, filename):
     if use_spec:
         link_specular(node_tree, spectex)
     else:
-        node_tree.nodes["Principled BSDF"].inputs["Specular"].default_value = 0
+        node_tree.nodes["Principled BSDF"].inputs["Specular IOR Level"].default_value = 0
     if use_tint:
         create_tint_nodes(node_tree, tintpal, texture, tintflag)
 
@@ -809,7 +809,7 @@ def create_terrain_shader(mat, shader, filename):
         links.new(tm.outputs[0], mixns[0].inputs[1])
 
     # link value parameters
-    bsdf.inputs["Specular"].default_value = 0
+    bsdf.inputs["Specular IOR Level"].default_value = 0
     link_value_shader_parameters(shader, node_tree)
 
 
