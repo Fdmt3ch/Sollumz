@@ -345,7 +345,9 @@ def obj_from_buffer(vertex_buffer, index_buffer, material, bones=None, name=None
         mesh.polygons.foreach_set("use_smooth", [True] * len(mesh.polygons))
         mesh.normals_split_custom_set_from_vertices(
             [Vector(normal).normalized() for normal in normals])
-        mesh.use_auto_smooth = True
+        
+        if (4,1,0) > bpy.app.version:
+            mesh.use_auto_smooth = True
 
     # set uvs
     i = 0
