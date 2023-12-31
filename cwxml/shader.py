@@ -9,25 +9,6 @@ from .element import (
 from .drawable import ParametersList, VertexLayoutList
 
 
-class RenderBucketProperty(ElementProperty):
-    value_types = (list)
-
-    def __init__(self, tag_name=None, value=None):
-        super().__init__(tag_name or "RenderBucket", value or [])
-
-    @classmethod
-    def from_xml(cls, element: ET.Element):
-        new = cls()
-        items = element.text.strip().split(" ")
-        for item in items:
-            new.value.append(int(item))
-        return new
-
-    def to_xml(self):
-        element = ET.Element(self.tag_name)
-        element.text = " ".join(self.value)
-
-
 class FileNameList(ListProperty):
     class FileName(TextProperty):
         tag_name = "Item"
@@ -47,12 +28,14 @@ class LayoutList(ListProperty):
 class Shader(ElementTree):
     tag_name = "Item"
 
+    render_bucket = 0
+
     def __init__(self):
         super().__init__()
         self.filename = TextProperty("Name", "")
-        self.render_buckets = RenderBucketProperty()
         self.layouts = LayoutList()
         self.parameters = ParametersList("Parameters")
+        self.render_bucket = 0
 
     @property
     def required_tangent(self):
@@ -139,9 +122,12 @@ class ShaderManager:
 
                 if filename is None:
                     continue
+                
+                render_bucket = int(filename_elem.attrib["bucket"])
 
                 shader = Shader.from_xml(node)
                 shader.filename = filename
+                shader.render_bucket = render_bucket
                 ShaderManager.shaders[filename] = shader
                 ShaderManager.base_shaders[filename] = base_name
 
