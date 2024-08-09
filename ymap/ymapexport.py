@@ -7,7 +7,7 @@ from struct import pack
 from ..cwxml.ymap import *
 from binascii import hexlify
 from ..tools.blenderhelper import remove_number_suffix
-from ..tools.meshhelper import get_bound_center_from_bounds, get_bound_extents, get_dimensions
+from ..tools.meshhelper import get_bound_center_from_bounds, get_bound_extents
 from ..sollumz_properties import SOLLUMZ_UI_NAMES, SollumType
 from ..tools.utils import get_min_vector, get_max_vector
 
@@ -17,7 +17,7 @@ def box_from_obj(obj):
 
     bbmin, bbmax = get_bound_extents(obj)
     center = get_bound_center_from_bounds(bbmin, bbmax)
-    dimensions = Vector(get_dimensions(bbmin, bbmax))
+    dimensions = obj.dimensions
 
     box.center_x = round(center.x * 4)
     box.center_y = round(center.y * 4)
@@ -33,8 +33,7 @@ def box_from_obj(obj):
     box.sin_z = round(dir.x * 32767)
     box.cos_z = round(dir.y * 32767)
 
-    return box
-
+    return box   
 
 def triangulate_obj(obj):
     """Convert mesh from n-polygons to triangles"""

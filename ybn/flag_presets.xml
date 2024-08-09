@@ -29,5 +29,9 @@
       <Flags1>map_weapon, map_deep_surface</Flags1>
       <Flags2>projectile, test_weapon, test_camera</Flags2>
     </Item>
+    <Item name="Weapon Only">
+      <Flags1>map_weapon</Flags1>
+      <Flags2>projectile, test_camera, test_weapon</Flags2>
+    </Item>
   </Presets>
 </FlagPresetsFile>

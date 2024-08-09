@@ -63,7 +63,7 @@ def add_occluder_material(sollum_type=None):
     material.node_tree.nodes["Principled BSDF"].inputs['Base Color'].default_value = mat_color
     material.node_tree.nodes["Principled BSDF"].inputs['Roughness'].default_value = 0
     material.node_tree.nodes["Principled BSDF"].inputs['Metallic'].default_value = 0
-    material.node_tree.nodes["Principled BSDF"].inputs['Emission'].default_value = emission_color
+    material.node_tree.nodes["Principled BSDF"].inputs['Emission Color'].default_value = emission_color
 
 
     return material
