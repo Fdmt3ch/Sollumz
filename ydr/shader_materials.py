@@ -256,13 +256,10 @@ def create_vector_nodes(node_tree, param):
 def create_array_item_node(group_name):
     array_item_group = bpy.data.node_groups.new(group_name, "ShaderNodeTree")
     array_item_group.nodes.new("NodeGroupInput")
-
-    # Create the necessary sockets for the node group
-    array_item_group.interface.new_socket(socket_type="NodeSocketFloat", name="X", in_out='INPUT')
-    array_item_group.interface.new_socket(socket_type="NodeSocketFloat", name="Y", in_out='INPUT')
-    array_item_group.interface.new_socket(socket_type="NodeSocketFloat", name="Z", in_out='INPUT')
-    array_item_group.interface.new_socket(socket_type="NodeSocketFloat", name="W", in_out='INPUT')
-
+    array_item_group.inputs.new("NodeSocketFloat", "X").default_value = 0
+    array_item_group.inputs.new("NodeSocketFloat", "Y").default_value = 0
+    array_item_group.inputs.new("NodeSocketFloat", "Z").default_value = 0
+    array_item_group.inputs.new("NodeSocketFloat", "W").default_value = 0
     return array_item_group
 
 
@@ -828,7 +825,7 @@ def create_shader(filename: str):
     mat.use_nodes = True
     mat.shader_properties.name = base_name
     mat.shader_properties.filename = filename
-    mat.shader_properties.renderbucket = shader.render_bucket
+    mat.shader_properties.renderbucket = shader.render_buckets[0]
 
     if filename in ShaderManager.terrains:
         create_terrain_shader(mat, shader, filename)
