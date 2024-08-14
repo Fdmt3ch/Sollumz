@@ -155,7 +155,8 @@ def geometry_from_object(obj, sollum_type=SollumType.BOUND_GEOMETRYBVH, is_frag=
     # Get child poly bounds
     for child in get_children_recursive(obj):
         mesh = child.to_mesh()
-        mesh.calc_normals_split()
+        if bpy.app.version < (4, 1, 0):
+            mesh.calc_normals_split()
         mesh.calc_loop_triangles()
 
         matrix = child.matrix_basis.copy()
